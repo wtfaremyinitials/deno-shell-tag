@@ -6,6 +6,8 @@ export function configure(opts) {
         trim = true,            // trim string output. invalid for encoding null
     } = opts
 
+    const decoder = new TextDecoder(encoding)
+
     if (encoding == null && trim) {
         throw new Error('Must specify an encoding if trim is enabled')
     }
@@ -28,22 +30,19 @@ export function configure(opts) {
         let { code } = await proc.status()
 
         if (code != 0 && !ignoreExitCode) {
-            let decoder = new TextDecoder('utf-8')
             let stderr = await Deno.readAll(proc.stderr)
-            stderr = decoder.decode(stderr).trim()
-            throw new Error(`Non-zero exit code: ${code} ${stderr}`)
+            let decoder = new TextDecoder('utf-8')
+            let error = decoder.decode(stderr).trim()
+            throw new Error(`Non-zero exit code: ${code} ${error}`)
         }
 
-        if (encoding != null) {
-            let decoder = new TextDecoder(encoding)
-            stdout = decoder.decode(stdout)
+        if (encoding == null) {
+            return stdout
         }
 
-        if (trim) {
-            stdout = stdout.trim()
-        }
-
-        return stdout
+        let text = decoder.decode(stdout)
+        if (trim) text = text.trim()
+        return text
     }
 }
 
