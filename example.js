@@ -1,4 +1,4 @@
-#!/usr/bin/env deno --allow-run
+#!/usr/bin/env -S deno run --allow-run
 import sh from './mod.js'
 
 (async function main() { // denoland/deno #471A

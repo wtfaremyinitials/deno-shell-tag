@@ -20,7 +20,7 @@ export function configure(opts) {
         }
 
         let proc = Deno.run({
-            args: ['/bin/sh', '-c', command],
+            cmd: ['/bin/sh', '-c', command],
             stdin: 'piped',
             stdout: 'piped',
             stderr: 'piped',
